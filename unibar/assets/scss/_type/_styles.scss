@@ -1,0 +1,83 @@
+/*
+	
+	TYPOGRAPHY
+	==========
+	
+	I'm doing a couple of things here. Let's talk about that.
+	
+	1. Maps
+	-------
+	
+	I'm storing all base typographic styles in a map. This has the following benefits:
+	
+	 - You have a list of every type style you're using
+	 - It's more concise. Styles for each breakpoint don't require extra variables (-sm, -lg, etc) or /////
+	
+	
+	2. Variables
+	------------
+	
+	Issues: This footer could be applied anywhere. Ideally, it'll be applied to sites that all have the
+	same typographic styling, but I can't rely on that.
+	
+	 - For sites with fluid type, they might have a different root flex
+	 - Some sites might not have fluid type at all
+
+
+
+*/
+
+
+$sans-serif: (
+	font-family: "source-sans-variable",
+
+	small: (
+		font-size: (
+			var(--sans-serif-small-sm, 1em),
+			var(--sans-serif-small-md, 0.9em),
+			var(--sans-serif-small-lg, 0.8em)
+		),
+	),
+	small-caps: (
+		font-size: (
+			var(--sans-serif-smallcaps-sm, 0.9em),
+			var(--sans-serif-smallcaps-md, 0.8em),
+			var(--sans-serif-smallcaps-lg, 0.7em)
+		),
+		text-transform: uppercase,
+	),
+	small-regular: (
+		use: small,
+		font-variation-settings: (
+			('wght' 360),
+		)
+	),
+	regular: (
+		font-size: (1.2em, 1em, 1em),
+		font-variation-settings: (
+			('wght' 360),
+		),
+	),
+	regular-condensed: (
+		font-size: (1.2em, 1em, 1em),
+		line-height: 1,
+	),
+	large: (
+		font-size: (1.2em, 1em, 1.6666em),
+		letter-spacing: (-0.1em, -0.2em, -0.3em),
+		font-variation-settings: (
+			('wght' 340, 'slnt' 20),
+			('wght' 800, 'slnt' 10),
+		),
+	),
+	large-condensed: (
+		use: large,
+		line-height: (1.1, 1.6),
+		font-style: italic,
+	),
+);
+
+
+
+
+

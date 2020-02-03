@@ -1,0 +1,303 @@
+@mixin root-size-adjust() {
+  
+}
+
+//	https://gist.github.com/jonathantneal/d0460e5c2d5d7f9bc5e6
+
+// =============================================================================
+// String Replace
+// =============================================================================
+
+@function str-replace($string, $search, $replace: "") {
+	$index: str-index($string, $search);
+
+	@if $index {
+		@return str-slice($string, 1, $index - 1) + $replace + str-replace(str-slice($string, $index + str-length($search)), $search, $replace);
+	}
+
+	@return $string;
+}
+
+// =============================================================================
+// Font Face
+// =============================================================================
+
+
+@mixin font-face($name, $directory: null, $weight: null, $style: null, $exts: otf ttf woff2 woff) {
+	$src: null;
+  $path: '';
+  
+	@if $directory {
+ 	$path: "../fonts/" + $directory + '/' + $name;
+	}
+	@else {
+	$path: "../fonts/" + $name + "/" + $name;
+	}
+
+	$extmods: (
+		eot: "?",
+		svg: "#" + str-replace($name, " ", "_")
+	);
+
+	$formats: (
+		otf: "opentype",
+		ttf: "truetype"
+	);
+
+	@each $ext in $exts {
+		$extmod: if(map-has-key($extmods, $ext), $ext + map-get($extmods, $ext), $ext);
+		$format: if(map-has-key($formats, $ext), map-get($formats, $ext), $ext);
+		$src: append($src, url(quote($path + "." + $extmod)) format(quote($format)), comma);
+	}
+
+	@font-face {
+		font-family: quote($name);
+		font-style: $style;
+		font-weight: $weight;
+		src: $src;
+	}
+}
+
+
+/*
+	As far as I can tell, there doesn't seem to be a function to get a key-value pair from a map based on index number. This might be clumsy, but it works: iterate across the map, incrementing a counter, until the counter matches the specified index, at which point you return the value.
+
+*/
+@function get-map-value-by-index($map, $index) {
+  $i: 0;
+  @each $key, $value in $map {
+    $i: $i + 1;
+    @if $i == $index {
+      @return $value;
+    }
+  }
+}
+
+//	Issue: set it so it can handle if someone adds a fourth breakpoint parameter but there are only three breakpoints
+
+@mixin prop($property, $values...) {
+  $i: 0;
+  @each $value in $values {
+    $i: $i+1;
+    @media screen and (min-width: get-map-value-by-index($breakpoints, $i)) {
+      #{$property}: $value;
+    }
+  }
+}
+
+
+
+@mixin break($break) {
+	$screen-size: map-get($breakpoints, $break);
+	@media screen and (min-width: $screen-size) {
+		@content
+	}
+}
+
+@mixin varfont-weight($variable-weight: 360, $fallback-weight: 400, $italic: false) {
+	font-family: "source-sans-pro";
+	font-weight: $fallback-weight;
+
+	@supports (font-variation-settings: 'wght' $variable-weight) {
+		@if $italic {
+			font-family: "source-sans-variable-italic";
+		}
+		@else {
+			font-family: "source-sans-variable";
+		}
+		font-variation-settings: 'wght' $variable-weight;
+	}
+}
+
+
+
+/* ---- */
+
+@function get-map-value-by-index($map, $index) {
+  //(2)
+  $i: 0;
+
+  @each $key, $value in $map {
+    $i: $i + 1;
+
+    @if $i == $index {
+      @return $value;
+    }
+    @else {
+      //      @return $index;
+    }
+  }
+}
+
+@function get-map-key-by-index($map, $index) {
+  //(2)
+  $i: 0;
+
+  @each $key, $value in $map {
+    $i: $i + 1;
+
+    @if $i == $index {
+      @return $key;
+    }
+  }
+}
+
+@mixin css($rules) {
+  //  This is the main map parser.
+  //  strategy: start with the first row, and grab the first column
+  //  then move to the second row and grab the first column, etc
+  $row: 0;
+  $col: 0;
+  $loop: length($breakpoints);
+
+  @for $i from 1 through $loop {
+    /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+    @if $i == 1 {
+
+      @each $key, $value in $rules {
+        //  get the list (the value)
+        //  and then loop, ignoring all values but the ith value
+        $count: 0;
+
+        @each $list-item in $value {
+          $count: $count + 1;
+
+          @if $count == $i {
+            //  this is the right one
+
+            @if $key != 'use' {
+              #{$key}: nth($value, $count);
+            }
+          }
+        }
+      }
+
+    }
+    @else {
+      /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */
+      $j: $i - 1;
+    $current-breakpoint: get-map-value-by-index($breakpoints, $j);
+
+    @media screen and (min-width: $current-breakpoint) {
+      @each $key, $value in $rules {
+        //  get the list (the value)
+        //  and then loop, ignoring all values but the ith value
+        $count: 0;
+
+        @each $list-item in $value {
+          $count: $count + 1;
+
+          @if $count == $i {
+            //  this is the right one
+            #{$key}: nth($value, $count);
+          }
+        }
+      }
+    }
+  }
+  }
+  
+}
+
+
+@mixin font($fontmap, $style:regular) {
+	font-family: map-get($fontmap, 'font-family');
+	$all-css: map-get($fontmap, $style);
+	
+	//  checking for "use" needs to happen down here.
+	//  iterate over all-css
+	//  if it hits "use"
+	
+  @each $key, $value in $all-css {
+    @if $key == 'use' {
+      //  the value references the other map we need
+    	$other-css: map-get($fontmap, $value);
+    	$all-css: map-merge($all-css, $other-css);
+    	//  merge it into the map of current CSS we already have
+//    	@include css($combined-css);
+    }
+    @else {
+//    	@include css($all-css);
+    }
+  }	
+	@include css($all-css);
+}
+
+@mixin links($link, $visited, $hover, $active) {
+    & {
+        color: $link;
+
+        &:visited {
+            color: $visited;
+        }
+        &:hover,
+        &:visited:hover {
+            color: $hover;
+        }
+        &:active, &:focus {
+            color: $active;
+        }
+    }
+}
+@function has-key($map, $defaults, $key) {
+  @if map-has-key($map, $key) {
+      @return map-get($map, $key);
+    } @else {
+      @return map-get($defaults, $key);
+  }
+}
+
+@mixin fix-value($property, $value) {
+	/*	Yes, I should be using autoprefix for this, but it appears I don't have a CodeKit 3 license, which that feature requires. Consider this a temporary fix.
+	*/
+	#{$property}: #{$value};
+	#{$property}: -webkit-#{$value};
+}
+@mixin fix-property($property, $value) {
+	/*	Yes, I should be using autoprefix for this, but it appears I don't have a CodeKit 3 license, which that feature requires. Consider this a temporary fix.
+	*/
+	#{$property}: #{$value};
+	-webkit-#{$property}: #{$value};
+}
+@mixin sequence($map:(item: 1)) {
+
+	$defaults: (
+		gap: 0.04s,
+		offset: 0s,
+		max-items: 120,
+	);
+	
+	$gap: has-key($map, $defaults, gap);
+	$offset: has-key($map, $defaults, offset);
+	$max-items: has-key($map, $defaults, max-items);
+
+	@for $i from 1 through $max-items {
+		&:nth-child(#{$i}) {
+			transition-delay: $offset + ($gap * $i);
+		}
+	}
+}

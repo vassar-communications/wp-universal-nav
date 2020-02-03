@@ -1,0 +1,26 @@
+:root {
+	--footer-bg: #444; // url("http://siwp.local/wp-content/plugins/unibar//assets/images/global-footer-bg.jpg");
+	--footer-text-color: #eee;
+	--footer-link-color: #aaa;
+	--footer-link-color-visited: #ddd;
+	--footer-link-color-hover: #fff;
+	--footer-link-color-active: #fff;
+}
+
+
+.u-lFooter {
+	/* background: url(https://www.vassar.edu/assets/images/global-footer-bg.jpg);
+	background-size: cover; */
+	
+	background: var(--footer-bg, #444);
+	background-size: cover;
+	background-position: center center;
+	color: var(--footer-text-color, #eee);
+	
+	a {
+		@include links(var(--footer-link-color, #aaa), var(--footer-link-color-visited, #ddd), var(--footer-link-color-hover, #fff), var(--footer-link-active, #fff));
+	}
+	.u-ExtendedFooter__listContainer {
+		background: rgba(0,0,0,0.4);
+	}
+}

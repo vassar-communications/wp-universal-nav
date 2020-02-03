@@ -1,0 +1,18 @@
+.u-lFooter {
+	li {
+		@include font($sans-serif, small-regular);
+	}
+	a {
+		font-size: 1em;
+	}
+}
+.u-ExtendedFooter__listHeader {
+	@include font($sans-serif, small-caps);
+}
+.u-VCard__item {
+	@include font($sans-serif, small-regular);
+	font-weight: normal;
+}
+.u-VCard__adr2 {
+    font-variation-settings: "wght" 320;
+}

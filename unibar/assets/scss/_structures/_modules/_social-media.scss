@@ -1,0 +1,15 @@
+.footerExtra {
+	overflow: hidden;	
+}
+.SocialAccount__iconList {
+	float: right;
+	
+	svg {
+		$icon-size: 1.3em;
+	    height: $icon-size;
+	    width: $icon-size;
+	}
+}
+.SocialAccount__iconContainer {
+    display: inline;
+}

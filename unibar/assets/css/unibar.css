@@ -1,0 +1,773 @@
+/*
+	As far as I can tell, there doesn't seem to be a function to get a key-value pair from a map based on index number. This might be clumsy, but it works: iterate across the map, incrementing a counter, until the counter matches the specified index, at which point you return the value.
+
+*/
+/* ---- */
+.u-ExtendedFooter__listGroup .u-ExtendedFooter__list {
+  padding-left: 0; }
+  .u-ExtendedFooter__listGroup .u-ExtendedFooter__list a {
+    display: block;
+    padding: 0.2em 0; }
+  .u-VCard__info li, .u-List--site li {
+    display: inline; }
+
+.footerExtra {
+  overflow: hidden; }
+
+.SocialAccount__iconList {
+  float: right; }
+  .SocialAccount__iconList svg {
+    height: 1.3em;
+    width: 1.3em; }
+
+.SocialAccount__iconContainer {
+  display: inline; }
+
+.u-lFooter {
+  overflow: auto; }
+  .u-lFooter hr {
+    margin: 0; }
+
+:root {
+  --footer-section-padding: 0.4em 4em; }
+
+.footerExtra {
+  padding: var(--footer-section-padding); }
+
+@media screen and (min-width: 40em) {
+  .u-ExtendedFooter__listGroup {
+    display: grid;
+    grid-gap: 0.1em;
+    grid-template-columns: repeat(2, 1fr);
+    padding: var(--footer-section-padding); } }
+
+@media screen and (min-width: 55em) {
+  .u-ExtendedFooter__listGroup {
+    grid-template-columns: repeat(3, 1fr); } }
+
+@media screen and (min-width: 70em) {
+  .u-ExtendedFooter__listGroup {
+    grid-template-columns: repeat(5, 1fr); } }
+
+.u-ExtendedFooter__listGroup .u-ExtendedFooter__listContainer {
+  padding: 1em; }
+
+.u-ExtendedFooter__listGroup .u-ExtendedFooter__list,
+.u-ExtendedFooter__listGroup .u-ExtendedFooter__listHeader {
+  text-align: center; }
+  @media screen and (min-width: 40em) {
+    .u-ExtendedFooter__listGroup .u-ExtendedFooter__list,
+    .u-ExtendedFooter__listGroup .u-ExtendedFooter__listHeader {
+      text-align: left; } }
+
+.u-VCard--site {
+  text-align: center; }
+
+:root {
+  --footer-bg: #444;
+  --footer-text-color: #eee;
+  --footer-link-color: #aaa;
+  --footer-link-color-visited: #ddd;
+  --footer-link-color-hover: #fff;
+  --footer-link-color-active: #fff; }
+
+.u-lFooter {
+  /* background: url(https://www.vassar.edu/assets/images/global-footer-bg.jpg);
+	background-size: cover; */
+  background: var(--footer-bg, #444);
+  background-size: cover;
+  background-position: center center;
+  color: var(--footer-text-color, #eee); }
+  .u-lFooter a {
+    color: var(--footer-link-color, #aaa); }
+    .u-lFooter a:visited {
+      color: var(--footer-link-color-visited, #ddd); }
+    .u-lFooter a:hover, .u-lFooter a:visited:hover {
+      color: var(--footer-link-color-hover, #fff); }
+    .u-lFooter a:active, .u-lFooter a:focus {
+      color: var(--footer-link-active, #fff); }
+  .u-lFooter .u-ExtendedFooter__listContainer {
+    background: rgba(0, 0, 0, 0.4); }
+
+/*
+	
+	TYPOGRAPHY
+	==========
+	
+	I'm doing a couple of things here. Let's talk about that.
+	
+	1. Maps
+	-------
+	
+	I'm storing all base typographic styles in a map. This has the following benefits:
+	
+	 - You have a list of every type style you're using
+	 - It's more concise. Styles for each breakpoint don't require extra variables (-sm, -lg, etc) or /////
+	
+	
+	2. Variables
+	------------
+	
+	Issues: This footer could be applied anywhere. Ideally, it'll be applied to sites that all have the
+	same typographic styling, but I can't rely on that.
+	
+	 - For sites with fluid type, they might have a different root flex
+	 - Some sites might not have fluid type at all
+
+
+
+*/
+.u-lFooter li {
+  font-family: "source-sans-variable";
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  font-variation-settings: "wght" 360;
+  font-size: var(--sans-serif-small-sm, 1em);
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */ }
+  @media screen and (min-width: 40em) {
+    .u-lFooter li {
+      font-size: var(--sans-serif-small-md, 0.9em); } }
+  @media screen and (min-width: 55em) {
+    .u-lFooter li {
+      font-size: var(--sans-serif-small-lg, 0.8em); } }
+
+.u-lFooter a {
+  font-size: 1em; }
+
+.u-ExtendedFooter__listHeader {
+  font-family: "source-sans-variable";
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  font-size: var(--sans-serif-smallcaps-sm, 0.9em);
+  text-transform: uppercase;
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */ }
+  @media screen and (min-width: 40em) {
+    .u-ExtendedFooter__listHeader {
+      font-size: var(--sans-serif-smallcaps-md, 0.8em); } }
+  @media screen and (min-width: 55em) {
+    .u-ExtendedFooter__listHeader {
+      font-size: var(--sans-serif-smallcaps-lg, 0.7em); } }
+
+.u-VCard__item {
+  font-family: "source-sans-variable";
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  font-variation-settings: "wght" 360;
+  font-size: var(--sans-serif-small-sm, 1em);
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */
+  font-weight: normal; }
+  @media screen and (min-width: 40em) {
+    .u-VCard__item {
+      font-size: var(--sans-serif-small-md, 0.9em); } }
+  @media screen and (min-width: 55em) {
+    .u-VCard__item {
+      font-size: var(--sans-serif-small-lg, 0.8em); } }
+
+.u-VCard__adr2 {
+  font-variation-settings: "wght" 320; }
+
+.ac-hiddenVisually {
+  display: none; }
+
+:root {
+  --unibar-content-bg: rgba(255,255,255,0.9);
+  --unibar-content-bg-blur: rgba(255,255,255,0.6);
+  --unibar-navicon-color: #861f41; }
+
+.home {
+  --unibar-bar-bg: #000;
+  --unibar-bar-border: #222; }
+
+.blog {
+  --unibar-bar-border: rgba(255,255,255,0.2);
+  --unibar-logo-color: #fff;
+  --unibar-logo-color--hover: #000;
+  --unibar-navicon-color: #fff; }
+
+.page {
+  --unibar-bar-bg: #f8f7f6;
+  --unibar-bar-border: transparent;
+  --unibar-logo-color: #861f41;
+  --unibar-logo-color--hover: #ed1c24; }
+
+.g-Search__form {
+  display: none !important;
+  float: right;
+  border: 1px solid #f00;
+  height: 2em;
+  margin-right: 3em; }
+
+.panel--main-nav {
+  width: 30%; }
+
+.panel--etc {
+  width: 70%; }
+
+.g-Search__form {
+  display: flex; }
+
+.g-Search__field {
+  width: 0%;
+  opacity: 0;
+  font-family: var(--serif);
+  font-size: 2.4em;
+  transition: 0.4s all ease; }
+  .nav-is-open .g-Search__field {
+    opacity: 1;
+    width: calc(100% - 6em); }
+
+.g-Search__submit {
+  background: transparent;
+  border: transparent;
+  width: 6em; }
+  .g-Search__submit svg {
+    fill: #444; }
+
+input#g-Search {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid #aaa;
+  -webkit-appearance: none; }
+
+.nav__content {
+  width: 100%;
+  display: flex;
+  position: relative;
+  z-index: 2; }
+
+.nav-is-open {
+  overflow: hidden; }
+  .nav-is-open .page__content {
+    filter: grayscale(100) blur(10px); }
+
+.vassar-nav {
+  margin: 0; }
+
+.supermenu {
+  display: flex;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background: var(--unibar-content-bg);
+  width: 100%;
+  height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition: 0.4s all ease;
+  padding-left: 8em; }
+  .nav-is-open .supermenu {
+    height: 100vh;
+    opacity: 1;
+    width: 100%;
+    z-index: 100; }
+    @supports (backdrop-filter: blur()) or (-webkit-backdrop-filter: blur()) {
+      .nav-is-open .supermenu {
+        /*	Yes, I should be using autoprefix for this, but it appears I don't have a CodeKit 3 license, which that feature requires. Consider this a temporary fix.
+	*/
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        background: var(--unibar-content-bg-blur); } }
+
+.nav-is-open {
+  padding-right: 15px; }
+
+.vassar-nav__item {
+  opacity: 0;
+  transition: 0.8s all ease; }
+  .vassar-nav__item:nth-child(1) {
+    transition-delay: 0.04s; }
+  .vassar-nav__item:nth-child(2) {
+    transition-delay: 0.08s; }
+  .vassar-nav__item:nth-child(3) {
+    transition-delay: 0.12s; }
+  .vassar-nav__item:nth-child(4) {
+    transition-delay: 0.16s; }
+  .vassar-nav__item:nth-child(5) {
+    transition-delay: 0.2s; }
+  .vassar-nav__item:nth-child(6) {
+    transition-delay: 0.24s; }
+  .vassar-nav__item:nth-child(7) {
+    transition-delay: 0.28s; }
+  .vassar-nav__item:nth-child(8) {
+    transition-delay: 0.32s; }
+  .vassar-nav__item:nth-child(9) {
+    transition-delay: 0.36s; }
+  .vassar-nav__item:nth-child(10) {
+    transition-delay: 0.4s; }
+  .vassar-nav__item:nth-child(11) {
+    transition-delay: 0.44s; }
+  .vassar-nav__item:nth-child(12) {
+    transition-delay: 0.48s; }
+  .vassar-nav__item:nth-child(13) {
+    transition-delay: 0.52s; }
+  .vassar-nav__item:nth-child(14) {
+    transition-delay: 0.56s; }
+  .vassar-nav__item:nth-child(15) {
+    transition-delay: 0.6s; }
+  .vassar-nav__item:nth-child(16) {
+    transition-delay: 0.64s; }
+  .vassar-nav__item:nth-child(17) {
+    transition-delay: 0.68s; }
+  .vassar-nav__item:nth-child(18) {
+    transition-delay: 0.72s; }
+  .vassar-nav__item:nth-child(19) {
+    transition-delay: 0.76s; }
+  .vassar-nav__item:nth-child(20) {
+    transition-delay: 0.8s; }
+  .vassar-nav__item:nth-child(21) {
+    transition-delay: 0.84s; }
+  .vassar-nav__item:nth-child(22) {
+    transition-delay: 0.88s; }
+  .vassar-nav__item:nth-child(23) {
+    transition-delay: 0.92s; }
+  .vassar-nav__item:nth-child(24) {
+    transition-delay: 0.96s; }
+  .vassar-nav__item:nth-child(25) {
+    transition-delay: 1s; }
+  .vassar-nav__item:nth-child(26) {
+    transition-delay: 1.04s; }
+  .vassar-nav__item:nth-child(27) {
+    transition-delay: 1.08s; }
+  .vassar-nav__item:nth-child(28) {
+    transition-delay: 1.12s; }
+  .vassar-nav__item:nth-child(29) {
+    transition-delay: 1.16s; }
+  .vassar-nav__item:nth-child(30) {
+    transition-delay: 1.2s; }
+  .vassar-nav__item:nth-child(31) {
+    transition-delay: 1.24s; }
+  .vassar-nav__item:nth-child(32) {
+    transition-delay: 1.28s; }
+  .vassar-nav__item:nth-child(33) {
+    transition-delay: 1.32s; }
+  .vassar-nav__item:nth-child(34) {
+    transition-delay: 1.36s; }
+  .vassar-nav__item:nth-child(35) {
+    transition-delay: 1.4s; }
+  .vassar-nav__item:nth-child(36) {
+    transition-delay: 1.44s; }
+  .vassar-nav__item:nth-child(37) {
+    transition-delay: 1.48s; }
+  .vassar-nav__item:nth-child(38) {
+    transition-delay: 1.52s; }
+  .vassar-nav__item:nth-child(39) {
+    transition-delay: 1.56s; }
+  .vassar-nav__item:nth-child(40) {
+    transition-delay: 1.6s; }
+  .vassar-nav__item:nth-child(41) {
+    transition-delay: 1.64s; }
+  .vassar-nav__item:nth-child(42) {
+    transition-delay: 1.68s; }
+  .vassar-nav__item:nth-child(43) {
+    transition-delay: 1.72s; }
+  .vassar-nav__item:nth-child(44) {
+    transition-delay: 1.76s; }
+  .vassar-nav__item:nth-child(45) {
+    transition-delay: 1.8s; }
+  .vassar-nav__item:nth-child(46) {
+    transition-delay: 1.84s; }
+  .vassar-nav__item:nth-child(47) {
+    transition-delay: 1.88s; }
+  .vassar-nav__item:nth-child(48) {
+    transition-delay: 1.92s; }
+  .vassar-nav__item:nth-child(49) {
+    transition-delay: 1.96s; }
+  .vassar-nav__item:nth-child(50) {
+    transition-delay: 2s; }
+  .vassar-nav__item:nth-child(51) {
+    transition-delay: 2.04s; }
+  .vassar-nav__item:nth-child(52) {
+    transition-delay: 2.08s; }
+  .vassar-nav__item:nth-child(53) {
+    transition-delay: 2.12s; }
+  .vassar-nav__item:nth-child(54) {
+    transition-delay: 2.16s; }
+  .vassar-nav__item:nth-child(55) {
+    transition-delay: 2.2s; }
+  .vassar-nav__item:nth-child(56) {
+    transition-delay: 2.24s; }
+  .vassar-nav__item:nth-child(57) {
+    transition-delay: 2.28s; }
+  .vassar-nav__item:nth-child(58) {
+    transition-delay: 2.32s; }
+  .vassar-nav__item:nth-child(59) {
+    transition-delay: 2.36s; }
+  .vassar-nav__item:nth-child(60) {
+    transition-delay: 2.4s; }
+  .vassar-nav__item:nth-child(61) {
+    transition-delay: 2.44s; }
+  .vassar-nav__item:nth-child(62) {
+    transition-delay: 2.48s; }
+  .vassar-nav__item:nth-child(63) {
+    transition-delay: 2.52s; }
+  .vassar-nav__item:nth-child(64) {
+    transition-delay: 2.56s; }
+  .vassar-nav__item:nth-child(65) {
+    transition-delay: 2.6s; }
+  .vassar-nav__item:nth-child(66) {
+    transition-delay: 2.64s; }
+  .vassar-nav__item:nth-child(67) {
+    transition-delay: 2.68s; }
+  .vassar-nav__item:nth-child(68) {
+    transition-delay: 2.72s; }
+  .vassar-nav__item:nth-child(69) {
+    transition-delay: 2.76s; }
+  .vassar-nav__item:nth-child(70) {
+    transition-delay: 2.8s; }
+  .vassar-nav__item:nth-child(71) {
+    transition-delay: 2.84s; }
+  .vassar-nav__item:nth-child(72) {
+    transition-delay: 2.88s; }
+  .vassar-nav__item:nth-child(73) {
+    transition-delay: 2.92s; }
+  .vassar-nav__item:nth-child(74) {
+    transition-delay: 2.96s; }
+  .vassar-nav__item:nth-child(75) {
+    transition-delay: 3s; }
+  .vassar-nav__item:nth-child(76) {
+    transition-delay: 3.04s; }
+  .vassar-nav__item:nth-child(77) {
+    transition-delay: 3.08s; }
+  .vassar-nav__item:nth-child(78) {
+    transition-delay: 3.12s; }
+  .vassar-nav__item:nth-child(79) {
+    transition-delay: 3.16s; }
+  .vassar-nav__item:nth-child(80) {
+    transition-delay: 3.2s; }
+  .vassar-nav__item:nth-child(81) {
+    transition-delay: 3.24s; }
+  .vassar-nav__item:nth-child(82) {
+    transition-delay: 3.28s; }
+  .vassar-nav__item:nth-child(83) {
+    transition-delay: 3.32s; }
+  .vassar-nav__item:nth-child(84) {
+    transition-delay: 3.36s; }
+  .vassar-nav__item:nth-child(85) {
+    transition-delay: 3.4s; }
+  .vassar-nav__item:nth-child(86) {
+    transition-delay: 3.44s; }
+  .vassar-nav__item:nth-child(87) {
+    transition-delay: 3.48s; }
+  .vassar-nav__item:nth-child(88) {
+    transition-delay: 3.52s; }
+  .vassar-nav__item:nth-child(89) {
+    transition-delay: 3.56s; }
+  .vassar-nav__item:nth-child(90) {
+    transition-delay: 3.6s; }
+  .vassar-nav__item:nth-child(91) {
+    transition-delay: 3.64s; }
+  .vassar-nav__item:nth-child(92) {
+    transition-delay: 3.68s; }
+  .vassar-nav__item:nth-child(93) {
+    transition-delay: 3.72s; }
+  .vassar-nav__item:nth-child(94) {
+    transition-delay: 3.76s; }
+  .vassar-nav__item:nth-child(95) {
+    transition-delay: 3.8s; }
+  .vassar-nav__item:nth-child(96) {
+    transition-delay: 3.84s; }
+  .vassar-nav__item:nth-child(97) {
+    transition-delay: 3.88s; }
+  .vassar-nav__item:nth-child(98) {
+    transition-delay: 3.92s; }
+  .vassar-nav__item:nth-child(99) {
+    transition-delay: 3.96s; }
+  .vassar-nav__item:nth-child(100) {
+    transition-delay: 4s; }
+  .vassar-nav__item:nth-child(101) {
+    transition-delay: 4.04s; }
+  .vassar-nav__item:nth-child(102) {
+    transition-delay: 4.08s; }
+  .vassar-nav__item:nth-child(103) {
+    transition-delay: 4.12s; }
+  .vassar-nav__item:nth-child(104) {
+    transition-delay: 4.16s; }
+  .vassar-nav__item:nth-child(105) {
+    transition-delay: 4.2s; }
+  .vassar-nav__item:nth-child(106) {
+    transition-delay: 4.24s; }
+  .vassar-nav__item:nth-child(107) {
+    transition-delay: 4.28s; }
+  .vassar-nav__item:nth-child(108) {
+    transition-delay: 4.32s; }
+  .vassar-nav__item:nth-child(109) {
+    transition-delay: 4.36s; }
+  .vassar-nav__item:nth-child(110) {
+    transition-delay: 4.4s; }
+  .vassar-nav__item:nth-child(111) {
+    transition-delay: 4.44s; }
+  .vassar-nav__item:nth-child(112) {
+    transition-delay: 4.48s; }
+  .vassar-nav__item:nth-child(113) {
+    transition-delay: 4.52s; }
+  .vassar-nav__item:nth-child(114) {
+    transition-delay: 4.56s; }
+  .vassar-nav__item:nth-child(115) {
+    transition-delay: 4.6s; }
+  .vassar-nav__item:nth-child(116) {
+    transition-delay: 4.64s; }
+  .vassar-nav__item:nth-child(117) {
+    transition-delay: 4.68s; }
+  .vassar-nav__item:nth-child(118) {
+    transition-delay: 4.72s; }
+  .vassar-nav__item:nth-child(119) {
+    transition-delay: 4.76s; }
+  .vassar-nav__item:nth-child(120) {
+    transition-delay: 4.8s; }
+  .nav-is-open .vassar-nav__item {
+    opacity: 1; }
+
+.vassar-nav__link {
+  padding: 0;
+  display: block;
+  text-decoration: none;
+  font-family: var(--serif);
+  font-size: 2.4em;
+  font-weight: 300;
+  transition: 0.2s all ease; }
+  .vassar-nav__link:link, .vassar-nav__link:visited {
+    color: #444; }
+  .vassar-nav__link:hover {
+    padding-left: 0.2em; }
+
+.unibar {
+  background: var(--unibar-bar-bg);
+  padding: 0.4em;
+  border-bottom: 1px solid #aaa;
+  border-bottom-color: var(--unibar-bar-border); }
+
+.vassar-link {
+  display: inline-block;
+  width: auto; }
+  .vassar-link svg path {
+    fill: var(--unibar-logo-color);
+    transition: 0.4s all ease; }
+  .vassar-link:hover svg path {
+    fill: var(--unibar-logo-color--hover); }
+
+.vassar__logo {
+  width: 5em;
+  display: block;
+  top: 1em;
+  left: 1em;
+  z-index: 200;
+  transition: all 0.4s ease; }
+  .nav-is-open .vassar__logo {
+    top: 1.4em;
+    left: 1.4em;
+    width: 6em;
+    opacity: 1; }
+
+.unibar-nav__btn {
+  --border-color: #00f;
+  height: 1.4em;
+  position: absolute;
+  right: 1em;
+  top: 0.56em;
+  width: 1.6em;
+  z-index: 5277;
+  transition: 0.4s all ease; }
+  .unibar-nav__btn:hover {
+    cursor: pointer; }
+  .nav-is-open .unibar-nav__btn {
+    height: 3em;
+    right: 0.6em;
+    width: 3em; }
+    .nav-is-open .unibar-nav__btn:hover {
+      transform: scale(0.8); }
+    .nav-is-open .unibar-nav__btn:before, .nav-is-open .unibar-nav__btn:after {
+      border-color: #aaa; }
+  .unibar-nav__btn:hover:before, .unibar-nav__btn:hover:after {
+    border-color: #f00; }
+  .unibar-nav__btn:before, .unibar-nav__btn:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    width: 100%;
+    transition: 0.4s all ease; }
+  .unibar-nav__btn:before {
+    border-top: 4px solid #aaa;
+    border-bottom: 4px solid #aaa;
+    height: 100%;
+    top: 0;
+    border-color: var(--unibar-navicon-color); }
+  .unibar-nav__btn:after {
+    border-top: 4px solid #aaa;
+    top: calc(50% - (4px / 2));
+    height: 0;
+    border-color: var(--unibar-navicon-color); }
+  .nav-is-open .unibar-nav__btn:before {
+    transform: rotate(45deg);
+    height: 0;
+    top: calc(50% - (4px / 2));
+    border-width: calc(4px / 2);
+    border-color: #f00; }
+  .unibar-nav__btn:after {
+    bottom: 0; }
+    .nav-is-open .unibar-nav__btn:after {
+      border-color: #f00;
+      transform: rotate(-45deg); }
+  .unibar-nav__btn .unibar-nav__btn__text {
+    display: block;
+    height: 0;
+    color: transparent; }

@@ -1,0 +1,14 @@
+%ui-list {
+	padding-left: 0;
+	
+	a {
+		display: block;
+		padding: 0.2em 0;
+	}
+	
+	&-inline {
+		li {
+			display: inline;
+		}
+	}
+}

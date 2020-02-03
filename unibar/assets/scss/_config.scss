@@ -1,0 +1,26 @@
+$VC--vassarVeryLightGray: #f8f7f6;
+$VC__vassarLightGray: #F0EEEB;
+$VC__vassarTextGray: #BFB9B0;
+$VC__vassarLinkPink: #ce1e46;
+$VC__vassarDullPink: #935966;
+$VC__vassarCharcoal: #5A5A5A;
+
+$VC__vassarBurgundy: #861f41;
+$VC__vassarBurgundy-dark: #54162a;
+$VC__vassarBurgundy-athletics: #53172B;
+$VC__vassarGray: #746661;
+
+$VC__brand-red: #ed1c24;
+$VC__brand-gold: #c6aa76;
+
+
+$grad-burgundy-red: linear-gradient(45deg, rgba(136,35,68,1) 0%,rgba(143,2,34,1) 49%,rgba(255,0,4,1) 100%);
+$grad-burgundy-dark: linear-gradient(45deg, $VC__vassarBurgundy-dark 0%, $VC__vassarBurgundy 100%);
+$grad-burgundy-athletics: linear-gradient(45deg, $VC__vassarBurgundy-dark 0%, $VC__vassarBurgundy 100%);
+
+
+$breakpoints: (
+	"small": 40em,
+	"medium": 55em,
+	"large": 70em
+);

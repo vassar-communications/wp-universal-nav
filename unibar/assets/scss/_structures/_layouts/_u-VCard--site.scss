@@ -1,0 +1,7 @@
+.u-VCard--site {
+	text-align: center;
+}
+.u-VCard__info,
+.u-List--site {
+	@extend %ui-list-inline;
+}

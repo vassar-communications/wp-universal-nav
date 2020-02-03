@@ -1,0 +1,32 @@
+.u-ExtendedFooter__listGroup {
+
+	@include break('small') {
+		display: grid;
+		grid-gap: 0.1em;
+		grid-template-columns: repeat(2, 1fr);
+		padding: var(--footer-section-padding);
+	}
+
+	@include break('medium') {
+		grid-template-columns: repeat(3, 1fr);
+	}
+
+	@include break('large') {
+		grid-template-columns: repeat(5, 1fr);
+	}
+	
+	.u-ExtendedFooter__listContainer {
+		padding: 1em;
+	}
+	.u-ExtendedFooter__list,
+	.u-ExtendedFooter__listHeader {
+		text-align: center;
+
+		@include break('small') {
+			text-align: left;
+		}
+	}
+	.u-ExtendedFooter__list {
+		@extend %ui-list;
+	}
+}
