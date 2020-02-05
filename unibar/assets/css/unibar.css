@@ -3,6 +3,9 @@
 
 */
 /* ---- */
+.g-supermenu ul {
+  padding: 0; }
+
 .u-ExtendedFooter__listGroup .u-ExtendedFooter__list {
   padding-left: 0; }
   .u-ExtendedFooter__listGroup .u-ExtendedFooter__list a {
@@ -63,6 +66,15 @@
 .u-VCard--site {
   text-align: center; }
 
+.g-menu__actions a {
+  display: block;
+  text-align: center;
+  margin: 0.2em 0;
+  padding: 0.3em;
+  background: #f00;
+  border-radius: 0.4em;
+  max-width: 80%; }
+
 .g-supermenu {
   display: flex;
   align-items: center;
@@ -75,7 +87,67 @@
   height: 0;
   opacity: 0;
   overflow: hidden;
-  transition: 0.4s all ease; }
+  transition: 0.4s all ease;
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  padding: 6em 0 0 0;
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */
+  /*  For a style declaration, font-size: (1em, 0.9em, 0.8em), the first value
+        is the base value. It shouldn't be wrapped in a media query. So if
+        we're on 1, we know that we don't wrap it in a media query.
+    */
+  /*  This is where it gets a little tricky. $i has progressed past 1,
+          which means we're past the base styling and should be wrapping any
+          additional values in media queries. However, we're also using $i
+          to determine which breakpoint we should use.
+          
+          If we grabbed the $ith value in the breakpoints map, we'd have already
+          skipped past the first breakpoint. If our breakpoints are small,
+          medium, and large, the resulting CSS would have styling for base
+          values (no media query), and then CSS wrapped in a media query for
+          the medium breakpoint. But what happened to the small breakpoint?
+          
+          So we have to cheat a little. We're still using $i to determine which
+          value in a series of styles we should use, but when we use $i to refer to
+          a breakpoint, we decrement it. So say $i is 2. We're grabbing the second
+          value in the list of, say, font-sizes. However, we need an additional
+          variable - something set to $i-1 - to get the appropriate breakpoint,
+          which should be "small". Let's call that $j.
+
+          (I think the best way to do this would be to start with 0 instead of 1;
+          but Sass doesn't allow referring to the 0th element of a list of
+          values.)
+      */ }
+  @media screen and (min-width: 40em) {
+    .g-supermenu {
+      padding: 4em; } }
   @media screen and (min-width: 55em) {
     .g-supermenu {
       position: fixed; } }
@@ -710,7 +782,9 @@ input#g-Search {
 
 .vassar-link {
   display: inline-block;
-  width: auto; }
+  position: relative;
+  width: auto;
+  z-index: 110; }
   .vassar-link svg path {
     fill: var(--unibar-logo-color);
     transition: 0.4s all ease; }

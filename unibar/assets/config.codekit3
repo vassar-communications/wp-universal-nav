@@ -160,6 +160,19 @@
 		"oS": 0,
 		"uL": 1
 		},
+	"/scss/_structures/_molecules/_list.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 1,
+		"oAP": "/scss/_structures/css/_list.css",
+		"oF": 0,
+		"oS": 0,
+		"uL": 1
+		},
 	"/scss/_structures/_molecules/_ui-list.scss": {
 		"aP": 0,
 		"bl": 0,
@@ -169,6 +182,19 @@
 		"ma": 0,
 		"oA": 1,
 		"oAP": "/scss/_structures/css/_ui-list.css",
+		"oF": 0,
+		"oS": 0,
+		"uL": 1
+		},
+	"/scss/_structures/_molecules/list.scss": {
+		"aP": 0,
+		"bl": 0,
+		"dP": 10,
+		"dS": 0,
+		"ft": 4,
+		"ma": 0,
+		"oA": 0,
+		"oAP": "/scss/_structures/css/list.css",
 		"oF": 0,
 		"oS": 0,
 		"uL": 1

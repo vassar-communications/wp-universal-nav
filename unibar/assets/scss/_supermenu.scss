@@ -113,8 +113,10 @@ input#g-Search {
 }
 .vassar-link {
 	display: inline-block;
+	position: relative;
 	width: auto;
-    
+	z-index: 110;
+
 	svg {
 		path {
 			fill: var(--unibar-logo-color);
