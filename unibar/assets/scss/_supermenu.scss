@@ -32,12 +32,6 @@
 }
 
 
-.panel--main-nav {
-	width: 30%;
-}
-.panel--etc {
-	width: 70%;
-}
 .g-Search__form {
 	display: flex;
 }
@@ -68,51 +62,16 @@ input#g-Search {
     border-bottom: 1px solid #aaa;
     -webkit-appearance: none;
 }
-.nav__content {
-	width: 100%;
-	display: flex;
-	position: relative;
-	z-index: 2;
-}
 .nav-is-open {
-	overflow: hidden;
+	@include break('medium') {	
+		overflow: hidden;
+	}
 	
 	.page__content {
 		filter: grayscale(100) blur(10px);
 	}
 }
-.vassar-nav {
-	margin: 0;
-}
 
-.supermenu {
-	display: flex;
-	align-items: center;
-	position: fixed;
-	top: 0;
-	left: 0;
-	background: var(--unibar-content-bg);
-	width: 100%;
-	height: 0;
-	opacity: 0;
-	overflow: hidden;
-	transition: 0.4s all ease;
-	padding-left: 8em;
-	
-
-//	@include inner-border(1px solid #ccc);
-	
-	.nav-is-open & {
-		@supports (backdrop-filter:blur()) or (-webkit-backdrop-filter:blur()) {
-			@include fix-property('backdrop-filter', 'blur(20px)');
-			background: var(--unibar-content-bg-blur);
-		}
-		height: 100vh;
-		opacity: 1;
-		width: 100%;
-		z-index: 100;
-	}
-}
 
 .nav-is-open {
 	padding-right: 15px;
@@ -122,7 +81,7 @@ input#g-Search {
 	
 	@include sequence();
 	opacity: 0;
-	transition: 0.8s all ease;
+	transition: 0.8s opacity ease;
 
 	.nav-is-open & {
 		opacity: 1;
